@@ -165,7 +165,7 @@ function closeWordSheet() {
 async function analyzeText() {
   if (!selectedLevel) { showModal('수준을 선택해주세요!'); return; }
   const text = document.getElementById('input').value.trim();
-  if (!text)  { showModal('텍스트를 입력해주세요!'); return; }
+  if (!text)  { showToast('글을 먼저 입력해주세요'); return; }
 
   goTo('screen-reader');
   renderWords(text);
@@ -210,14 +210,30 @@ function closePanel() {
   document.getElementById('analysis-panel').classList.remove('show');
 }
 
-/* ===== COMING SOON TOAST ===== */
+/* ===== TEXTAREA 활성화 감지 ===== */
+document.addEventListener('DOMContentLoaded', () => {
+  const textarea = document.getElementById('input');
+  const btnNext  = document.getElementById('btn-next');
+
+  // 비어있으면 비활성 스타일만 적용 (클릭은 가능, 토스트로 안내)
+  const syncBtn = () => {
+    btnNext.classList.toggle('disabled-look', textarea.value.trim().length === 0);
+  };
+  syncBtn();
+  textarea.addEventListener('input', syncBtn);
+});
+
+/* ===== TOAST ===== */
 let toastTimer = null;
 
-function showComingSoon(name) {
+function showToast(msg) {
   const toast = document.getElementById('toast');
-  toast.textContent = `${name} 페이지 준비중이에요 🙂`;
+  toast.textContent = msg;
   toast.classList.add('show');
-
   if (toastTimer) clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+function showComingSoon(name) {
+  showToast(`${name} 페이지 준비중이에요 🙂`);
 }

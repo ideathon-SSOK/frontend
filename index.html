@@ -20,11 +20,11 @@
       <div class="logo-img" aria-label="SSOK"></div>
     </div>
     <div class="home-body">
-      <p class="home-welcome">어려운 글, 쉽게 이해해요</p>
+      <p class="home-welcome">어려운 글을 한 눈에 쉽게 쏙 !</p>
 
       <!-- 레벨 선택 -->
       <div class="home-level-section">
-        <p class="home-level-label">내 수준을 선택해주세요</p>
+        <p class="home-level-label">어떻게 설명해드릴까요?</p>
         <div class="level-chips">
           <button class="chip" data-level="중고등학생" onclick="selectLevel(this)">중·고등학생</button>
           <button class="chip" data-level="대학생" onclick="selectLevel(this)">대학생</button>
@@ -77,13 +77,12 @@
 
     <div class="input-screen-body">
       <div class="input-section grow">
-        <p class="input-section-label">이해하기 어려운 글을 입력해보세요.</p>
-        <textarea id="input" placeholder="계약서, 논문, 뉴스 기사 등 어떤 글이든 붙여넣으세요..."></textarea>
+        <textarea id="input" placeholder="계약서, 논문, 뉴스 기사 등 어떤 글이든 쏙! 넣어보세요"></textarea>
       </div>
     </div>
 
     <div class="bottom-action">
-      <button class="primary-btn" onclick="analyzeText()">다음</button>
+      <button class="primary-btn" id="btn-next" onclick="analyzeText()">다음</button>
     </div>
   </div>
 
@@ -95,7 +94,7 @@
           <path d="M9 1L1 8.5L9 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
-      <span class="nav-title"></span>
+      <span class="nav-title">한 눈에 쏙! 이해</span>
     </div>
 
     <div class="reader-body" id="reader-body">

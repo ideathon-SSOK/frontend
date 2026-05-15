@@ -17,7 +17,7 @@
   --sans: 'Noto Sans KR', sans-serif;
   --radius: 14px;
   --tab-h: 68px;
-  --nav-h: 56px;
+  --nav-h: 70px;
 }
 
 html, body { height: 100%; }
@@ -38,7 +38,7 @@ body {
 }
 .app {
   position: relative;
-  width: min(100%, 480px);
+  width: min(100%, 410px);
   background: var(--bg);
   box-shadow: 0 8px 48px rgba(0,0,0,0.15);
   border-radius: 20px;
@@ -97,7 +97,7 @@ body {
 }
 
 /* ===== TAB BAR ===== */
-/* 탭바 토글 시 .tab-bar 클래스 자체를 show/hide — 쉽게 제거 가능 */
+/* 탭바 제거 시: display:none 하나만 추가하면 됨 */
 .tab-bar {
   height: var(--tab-h);
   display: flex;
@@ -106,7 +106,6 @@ body {
   background: var(--surface);
   border-top: 1px solid var(--border);
   flex-shrink: 0;
-  /* 탭바 제거 시: display:none 하나만 추가하면 됨 */
 }
 .tab-item {
   flex: 1;
@@ -116,7 +115,6 @@ body {
   cursor: pointer;
   padding: 0;
 }
-
 .tab-icon {
   width: 24px;
   height: 24px;
@@ -134,20 +132,21 @@ body {
 
 /* ===== HOME SCREEN ===== */
 .home-header {
-  padding: 3rem 1.5rem 1rem;
+  padding: 3rem 0.5rem 1rem;
   background: var(--surface);
   flex-shrink: 0;
 }
 .logo-img {
-  width: 100px;
-  height: 36px;
+  width: 170px;
+  height: 90px;
   background: url('SSOK.png') left center / contain no-repeat;
 }
+
 /* 홈 레벨 선택 */
 .home-level-section {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.3rem;
   width: 100%;
 }
 .home-level-label {
@@ -172,7 +171,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 2.5rem 1.5rem;
+  padding: 0.3rem 1rem 2.5rem;
+  background-color: #fff;
   gap: 2rem;
 }
 .home-welcome {
@@ -185,12 +185,12 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.85rem 1.5rem;
+  padding: 0.6rem 1.5rem;
   background: var(--blue-500);
   color: #fff;
   border: none;
   border-radius: var(--radius);
-  font-size: 1rem;
+  font-size: 15px;
   font-weight: 600;
   font-family: var(--sans);
   cursor: pointer;
@@ -223,7 +223,7 @@ body {
   gap: 0.5rem;
 }
 .chip {
-  padding: 0.45rem 1rem;
+  padding: 0.3rem 1rem;
   border-radius: 20px;
   border: 1.5px solid var(--border);
   background: var(--surface);
@@ -280,7 +280,21 @@ textarea::placeholder { color: var(--ink-faint); }
   transition: background 0.15s;
 }
 .primary-btn:hover { background: #4a68e0; }
-.primary-btn:disabled { background: var(--blue-300); cursor: not-allowed; }
+.primary-btn.disabled-look {
+  background: var(--surface);
+  color: var(--ink-faint);
+}
+.primary-btn.disabled-look:hover {
+  background: var(--surface);
+}
+.primary-btn:disabled {
+  background: var(--surface);
+  color: var(--ink-faint);
+  cursor: pointer;
+}
+.primary-btn:disabled:hover {
+  background: var(--surface);
+}
 
 /* ===== READER SCREEN ===== */
 .reader-body {
