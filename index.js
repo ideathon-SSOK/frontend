@@ -1,7 +1,7 @@
 /* ===== CONFIG ===== */
 const BASE_URL  = 'http://localhost:8080';
-const API_TEXT  = `${BASE_URL}/api/analyze`;
-const API_WORD  = `${BASE_URL}/api/word`;
+const API_TEXT  = `${BASE_URL}/api/v1/literacy/analyze`;
+const API_WORD  = `${BASE_URL}/api/v1/literacy/explain-word`;
 
 /* ===== MODAL ===== */
 function showModal(msg) {
@@ -21,8 +21,7 @@ let screenHistory = ['screen-home'];
 
 /* ===== NAVIGATION ===== */
 function goToInput() {
-  if (!selectedLevel) { showModal('수준을 먼저 선택해주세요!'); return; }
-  // 입력 화면 nav 뱃지 업데이트
+  if (!selectedLevel) { showModal('설명 방식을 먼저 선택해주세요 !'); return; }
   document.getElementById('nav-level-badge').textContent = selectedLevel;
   goTo('screen-input');
 }
@@ -53,7 +52,6 @@ function goBack() {
   from.classList.remove('active');
   to.classList.add('active');
 
-  // 패널 닫기
   closePanel();
   closeWordSheet();
 }
@@ -66,10 +64,8 @@ function selectLevel(btn) {
 }
 
 /* ===== RENDER WORDS ===== */
-function renderWords(text) {
-  const container = document.getElementById('reader-text');
+function renderWordsInto(text, container) {
   const tokens = text.split(/(\s+)/);
-
   container.innerHTML = tokens.map(token => {
     if (/^\s+$/.test(token)) return token.replace(/\n/g, '<br>');
 
@@ -78,22 +74,43 @@ function renderWords(text) {
     const [, pre, word, post] = match;
     return `${pre}<span class="word" data-word="${word}" onclick="onWordClick(this, event)">${word}</span>${post}`;
   }).join('');
+}
 
-  // 드래그 선택 이벤트 등록
+function renderWords(text) {
+  const container = document.getElementById('reader-text');
+  renderWordsInto(text, container);
   container.addEventListener('mouseup',  handleDragSelect);
   container.addEventListener('touchend', handleDragSelect);
 }
 
+function renderTitle(title) {
+  const titleEl = document.getElementById('reader-title');
+  if (!titleEl) return;
+
+  if (title) {
+    titleEl.style.display = 'block';
+    renderWordsInto(title, titleEl);
+    titleEl.addEventListener('mouseup',  handleDragSelect);
+    titleEl.addEventListener('touchend', handleDragSelect);
+  } else {
+    titleEl.style.display = 'none';
+  }
+}
+
 /* ===== DRAG SELECT ===== */
 function handleDragSelect() {
-  const sel     = window.getSelection();
+  const sel      = window.getSelection();
   const selected = sel?.toString().trim();
   if (!selected || selected.length <= 1) return;
 
-  const container = document.getElementById('reader-text');
+  const readerText  = document.getElementById('reader-text');
+  const readerTitle = document.getElementById('reader-title');
   if (!sel.rangeCount) return;
   const range = sel.getRangeAt(0);
-  if (!container.contains(range.commonAncestorContainer)) return;
+
+  const inText  = readerText?.contains(range.commonAncestorContainer);
+  const inTitle = readerTitle?.contains(range.commonAncestorContainer);
+  if (!inText && !inTitle) return;
 
   sel.removeAllRanges();
   openWordSheet(selected.replace(/\s+/g, ' '));
@@ -103,7 +120,7 @@ function handleDragSelect() {
 function onWordClick(el, e) {
   if (e) e.stopPropagation();
   const sel = window.getSelection();
-  if (sel && sel.toString().trim().length > 1) return; // 드래그 중이면 무시
+  if (sel && sel.toString().trim().length > 1) return;
 
   document.querySelectorAll('.word').forEach(w => w.classList.remove('active'));
   el.classList.add('active');
@@ -112,12 +129,12 @@ function onWordClick(el, e) {
 
 /* ===== WORD SHEET ===== */
 async function openWordSheet(word) {
-  if (!selectedLevel) { showModal('수준을 선택해주세요!'); return; }
+  if (!selectedLevel) { showModal('설명 방식을 선택해주세요!'); return; }
   activeWord = word;
 
-  document.getElementById('sheet-word').textContent    = word;
-  document.getElementById('sheet-meaning').innerHTML   = '<span class="loading-dots"><span></span><span></span><span></span></span>';
-  document.getElementById('sheet-context').innerHTML   = '<span class="loading-dots"><span></span><span></span><span></span></span>';
+  document.getElementById('sheet-word').textContent  = word;
+  document.getElementById('sheet-meaning').innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
+  document.getElementById('sheet-context').innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
 
   document.getElementById('word-overlay').classList.add('show');
   document.getElementById('word-sheet').classList.add('show');
@@ -128,7 +145,11 @@ async function openWordSheet(word) {
     const res = await fetch(API_WORD, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ word, contextText, targetLevel: selectedLevel })
+      body: JSON.stringify({
+        word,
+        contextText,
+        targetLevel: selectedLevel
+      })
     });
 
     if (activeWord !== word) return;
@@ -142,10 +163,17 @@ async function openWordSheet(word) {
     }
 
     const data = await res.json();
-    // 백엔드 응답 구조에 맞게 수정하세요
-    // 예: { meaning: "...", context: "..." } 또는 { result: "..." }
-    document.getElementById('sheet-meaning').textContent = data.meaning ?? data.result ?? data.content ?? JSON.stringify(data);
-    document.getElementById('sheet-context').textContent = data.context ?? '';
+    const fullText = data.result ?? data.content ?? JSON.stringify(data);
+    document.getElementById('sheet-meaning').textContent = fullText;
+
+    const contextEl      = document.getElementById('sheet-context');
+    const contextSection = contextEl.closest('.word-section');
+    if (data.context) {
+      contextEl.textContent = data.context;
+      if (contextSection) contextSection.style.display = '';
+    } else {
+      if (contextSection) contextSection.style.display = 'none';
+    }
 
   } catch (e) {
     if (activeWord !== word) return;
@@ -163,18 +191,19 @@ function closeWordSheet() {
 
 /* ===== ANALYZE FULL TEXT ===== */
 async function analyzeText() {
-  if (!selectedLevel) { showModal('수준을 선택해주세요!'); return; }
-  const text = document.getElementById('input').value.trim();
-  if (!text)  { showToast('글을 먼저 입력해주세요'); return; }
+  if (!selectedLevel) { showModal('설명 방식을 선택해주세요!'); return; }
+  const text  = document.getElementById('input').value.trim();
+  const title = document.getElementById('input-title')?.value.trim() || '';
+  if (!title) { showToast('제목을 입력해주세요'); return; }
+  if (!text)  { showToast('글을 입력해주세요'); return; }
 
   goTo('screen-reader');
+  renderTitle(title);
   renderWords(text);
-
-  // 전체 해석 미리 로드
-  loadFullAnalysis(text);
+  loadFullAnalysis(title, text);
 }
 
-async function loadFullAnalysis(text) {
+async function loadFullAnalysis(title, text) {
   const body = document.getElementById('analysis-body');
   body.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span> 분석 중...';
 
@@ -182,7 +211,11 @@ async function loadFullAnalysis(text) {
     const res = await fetch(API_TEXT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, targetLevel: selectedLevel })
+      body: JSON.stringify({
+        title,
+        text,
+        targetLevel: selectedLevel
+      })
     });
 
     if (!res.ok) {
@@ -212,15 +245,18 @@ function closePanel() {
 
 /* ===== TEXTAREA 활성화 감지 ===== */
 document.addEventListener('DOMContentLoaded', () => {
-  const textarea = document.getElementById('input');
-  const btnNext  = document.getElementById('btn-next');
+  const textarea  = document.getElementById('input');
+  const titleInput = document.getElementById('input-title');
+  const btnNext   = document.getElementById('btn-next');
 
-  // 비어있으면 비활성 스타일만 적용 (클릭은 가능, 토스트로 안내)
   const syncBtn = () => {
-    btnNext.classList.toggle('disabled-look', textarea.value.trim().length === 0);
+    const title = titleInput?.value.trim() || '';
+    const text  = textarea.value.trim();
+    btnNext.classList.toggle('disabled-look', !title || !text);
   };
   syncBtn();
   textarea.addEventListener('input', syncBtn);
+  titleInput?.addEventListener('input', syncBtn);
 });
 
 /* ===== TOAST ===== */
