@@ -258,6 +258,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const text  = textarea.value.trim();
     btnNext.classList.toggle('disabled-look', !title || !text);
     clearBtn.style.display = (title || text) ? 'inline' : 'none';
+      titleInput.style.height = 'auto';                          
+  titleInput.style.height = titleInput.scrollHeight + 'px';   
   };
   syncBtn();
   textarea.addEventListener('input', syncBtn);
