@@ -1,5 +1,5 @@
 /* ===== CONFIG ===== */
-const BASE_URL  = 'http://localhost:8080';
+const BASE_URL = 'https://ssok.cloud';
 const API_TEXT  = `${BASE_URL}/api/v1/literacy/analyze`;
 const API_WORD  = `${BASE_URL}/api/v1/literacy/explain-word`;
 
