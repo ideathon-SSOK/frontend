@@ -359,7 +359,8 @@ body {
 .word.active { background: var(--blue-light); color: var(--blue); }
 .reader-text::selection,
 .reader-text *::selection { background: #c8d9fd; color: var(--ink); }
-
+.reader-title::selection,
+.reader-title *::selection { background: #c8d9fd; color: var(--ink); }
 /* ===== BOTTOM PANELS ===== */
 .panel-overlay {
   position: absolute; inset: 0;
