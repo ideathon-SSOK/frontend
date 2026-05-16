@@ -4,12 +4,19 @@ const API_TEXT  = `${BASE_URL}/api/v1/literacy/analyze`;
 const API_WORD  = `${BASE_URL}/api/v1/literacy/explain-word`;
 
 /* ===== SAFE INJECT (Shadow DOM으로 백엔드 style 태그 격리) ===== */
+// function safeInject(container, html) {
+//   container.innerHTML = '';
+//   if (!container.shadowRoot) {
+//     container.attachShadow({ mode: 'open' });
+//   }
+//   container.shadowRoot.innerHTML = html;
+// }
 function safeInject(container, html) {
-  container.innerHTML = '';
-  if (!container.shadowRoot) {
-    container.attachShadow({ mode: 'open' });
-  }
-  container.shadowRoot.innerHTML = html;
+  const clean = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['h3', 'h4', 'p', 'span', 'div', 'ul', 'ol', 'li', 'strong', 'em', 'br'],
+    ALLOWED_ATTR: ['style', 'class']
+  });
+  container.innerHTML = clean;
 }
 
 /* ===== MODAL ===== */
