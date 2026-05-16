@@ -3,16 +3,15 @@ const BASE_URL = 'https://ssok.cloud';
 const API_TEXT  = `${BASE_URL}/api/v1/literacy/analyze`;
 const API_WORD  = `${BASE_URL}/api/v1/literacy/explain-word`;
 
-/* ===== SAFE INJECT (Shadow DOM으로 백엔드 style 태그 격리) ===== */
-// function safeInject(container, html) {
-//   container.innerHTML = '';
-//   if (!container.shadowRoot) {
-//     container.attachShadow({ mode: 'open' });
-//   }
-//   container.shadowRoot.innerHTML = html;
-// }
+/* ===== FIX COLOR (백엔드에서 # 제거된 색상 코드 복원) ===== */
+function fixColors(html) {
+  return html.replace(/color:\s*([0-9A-Fa-f]{6})/g, 'color: #$1');
+}
+
+/* ===== SAFE INJECT ===== */
 function safeInject(container, html) {
-  const clean = DOMPurify.sanitize(html, {
+  const fixed = fixColors(html);
+  const clean = DOMPurify.sanitize(fixed, {
     ALLOWED_TAGS: ['h3', 'h4', 'p', 'span', 'div', 'ul', 'ol', 'li', 'strong', 'em', 'br'],
     ALLOWED_ATTR: ['style', 'class']
   });
@@ -265,8 +264,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const text  = textarea.value.trim();
     btnNext.classList.toggle('disabled-look', !title || !text);
     clearBtn.style.display = (title || text) ? 'inline' : 'none';
-      titleInput.style.height = 'auto';                          
-  titleInput.style.height = titleInput.scrollHeight + 'px';   
+    titleInput.style.height = 'auto';
+    titleInput.style.height = titleInput.scrollHeight + 'px';
   };
   syncBtn();
   textarea.addEventListener('input', syncBtn);
