@@ -171,13 +171,12 @@ async function openWordSheet(word) {
     if (activeWord !== word) return;
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      meaningEl.textContent = `오류 ${res.status}: ${err.message || res.statusText}`;
+      const err = await res.text().catch(() => '');
+      meaningEl.textContent = `오류 ${res.status}: ${err || res.statusText}`;
       return;
     }
 
-    const data = await res.json();
-    const html = data.result ?? data.content ?? JSON.stringify(data);
+    const html = await res.text();
     safeInject(meaningEl, html);
 
   } catch (e) {
@@ -223,13 +222,12 @@ async function loadFullAnalysis(title, text) {
     });
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      body.textContent = `오류 ${res.status}: ${err.message || res.statusText}`;
+      const err = await res.text().catch(() => '');
+      body.textContent = `오류 ${res.status}: ${err || res.statusText}`;
       return;
     }
 
-    const data = await res.json();
-    const html = data.result ?? data.content ?? JSON.stringify(data);
+    const html = await res.text();
     safeInject(body, html);
 
   } catch (e) {
