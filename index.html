@@ -78,13 +78,15 @@
     <div class="input-screen-body">
       <!-- 제목 입력 -->
       <div class="title-input-wrap">
-        <input
-          type="text"
-          id="input-title"
-          class="title-input"
-          placeholder="제목을 입력하세요"
-        />
-        <!-- <p class="title-sub">이해하기 어려운 글을 입력해보세요.</p> -->
+        <div class="title-input-row">
+          <input
+            type="text"
+            id="input-title"
+            class="title-input"
+            placeholder="제목을 입력하세요"
+          />
+          <button class="clear-btn" id="clear-btn" onclick="clearInputs()" style="display:none">새로 쓰기</button>
+        </div>
       </div>
 
       <!-- 구분선 -->

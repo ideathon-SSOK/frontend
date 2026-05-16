@@ -72,6 +72,14 @@ function selectLevel(btn) {
   selectedLevel = btn.dataset.level;
 }
 
+/* ===== CLEAR INPUTS ===== */
+function clearInputs() {
+  document.getElementById('input-title').value = '';
+  document.getElementById('input').value = '';
+  document.getElementById('clear-btn').style.display = 'none';
+  document.getElementById('btn-next').classList.add('disabled-look');
+}
+
 /* ===== RENDER WORDS ===== */
 function renderWordsInto(text, container) {
   const tokens = text.split(/(\s+)/);
@@ -141,8 +149,6 @@ async function openWordSheet(word) {
   if (!selectedLevel) { showModal('설명 방식을 선택해주세요!'); return; }
   activeWord = word;
 
-  // document.getElementById('sheet-word').textContent = word;
-
   const meaningEl = document.getElementById('sheet-meaning');
   meaningEl.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
 
@@ -203,7 +209,7 @@ async function analyzeText() {
 
 async function loadFullAnalysis(title, text) {
   const body = document.getElementById('analysis-body');
-  body.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span> 분석 중...';
+  body.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>  잠시만 기다려 주세요';
 
   try {
     const res = await fetch(API_TEXT, {
@@ -247,11 +253,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const textarea   = document.getElementById('input');
   const titleInput = document.getElementById('input-title');
   const btnNext    = document.getElementById('btn-next');
+  const clearBtn   = document.getElementById('clear-btn');
 
   const syncBtn = () => {
     const title = titleInput?.value.trim() || '';
     const text  = textarea.value.trim();
     btnNext.classList.toggle('disabled-look', !title || !text);
+    clearBtn.style.display = (title || text) ? 'inline' : 'none';
   };
   syncBtn();
   textarea.addEventListener('input', syncBtn);
