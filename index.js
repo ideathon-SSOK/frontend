@@ -183,9 +183,10 @@ async function openWordSheet(word) {
     }
 
     const html = await res.text();
-    safeInject(meaningEl, html);
+    
+  safeInject(meaningEl, html);
 
-  } catch (e) {
+} catch (e) {
     if (activeWord !== word) return;
     meaningEl.textContent = `네트워크 오류: ${e.message}`;
   }

@@ -417,7 +417,16 @@ body {
   transition: color 0.1s;
 }
 .panel-close:hover { color: var(--ink); }
-.panel-body { overflow-y: auto; flex: 1; padding-bottom: 0.5rem; }
+.panel-body { 
+  overflow-y: auto; 
+  flex: 1; 
+  padding-bottom: 0.5rem; 
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
+}
+.panel-body::-webkit-scrollbar {
+  display: none; 
+}
 
 /* Word sheet */
 .word-sheet-header { align-items: flex-start; padding-top: 0.4rem; }
