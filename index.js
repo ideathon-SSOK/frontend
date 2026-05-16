@@ -3,6 +3,15 @@ const BASE_URL  = 'http://localhost:8080';
 const API_TEXT  = `${BASE_URL}/api/v1/literacy/analyze`;
 const API_WORD  = `${BASE_URL}/api/v1/literacy/explain-word`;
 
+/* ===== SAFE INJECT (Shadow DOM으로 백엔드 style 태그 격리) ===== */
+function safeInject(container, html) {
+  container.innerHTML = '';
+  if (!container.shadowRoot) {
+    container.attachShadow({ mode: 'open' });
+  }
+  container.shadowRoot.innerHTML = html;
+}
+
 /* ===== MODAL ===== */
 function showModal(msg) {
   document.getElementById('modal-msg').textContent = msg;
@@ -132,9 +141,10 @@ async function openWordSheet(word) {
   if (!selectedLevel) { showModal('설명 방식을 선택해주세요!'); return; }
   activeWord = word;
 
-  document.getElementById('sheet-word').textContent  = word;
-  document.getElementById('sheet-meaning').innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
-  document.getElementById('sheet-context').innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
+  // document.getElementById('sheet-word').textContent = word;
+
+  const meaningEl = document.getElementById('sheet-meaning');
+  meaningEl.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
 
   document.getElementById('word-overlay').classList.add('show');
   document.getElementById('word-sheet').classList.add('show');
@@ -156,29 +166,17 @@ async function openWordSheet(word) {
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      const msg = `오류 ${res.status}: ${err.message || res.statusText}`;
-      document.getElementById('sheet-meaning').textContent = msg;
-      document.getElementById('sheet-context').textContent = '';
+      meaningEl.textContent = `오류 ${res.status}: ${err.message || res.statusText}`;
       return;
     }
 
     const data = await res.json();
-    const fullText = data.result ?? data.content ?? JSON.stringify(data);
-    document.getElementById('sheet-meaning').textContent = fullText;
-
-    const contextEl      = document.getElementById('sheet-context');
-    const contextSection = contextEl.closest('.word-section');
-    if (data.context) {
-      contextEl.textContent = data.context;
-      if (contextSection) contextSection.style.display = '';
-    } else {
-      if (contextSection) contextSection.style.display = 'none';
-    }
+    const html = data.result ?? data.content ?? JSON.stringify(data);
+    safeInject(meaningEl, html);
 
   } catch (e) {
     if (activeWord !== word) return;
-    document.getElementById('sheet-meaning').textContent = `네트워크 오류: ${e.message}`;
-    document.getElementById('sheet-context').textContent = '';
+    meaningEl.textContent = `네트워크 오류: ${e.message}`;
   }
 }
 
@@ -195,7 +193,7 @@ async function analyzeText() {
   const text  = document.getElementById('input').value.trim();
   const title = document.getElementById('input-title')?.value.trim() || '';
   if (!title) { showToast('제목을 입력해주세요'); return; }
-  if (!text)  { showToast('글을 입력해주세요'); return; }
+  if (!text)  { showToast('글을 먼저 입력해주세요'); return; }
 
   goTo('screen-reader');
   renderTitle(title);
@@ -225,7 +223,8 @@ async function loadFullAnalysis(title, text) {
     }
 
     const data = await res.json();
-    body.textContent = data.result ?? data.content ?? JSON.stringify(data);
+    const html = data.result ?? data.content ?? JSON.stringify(data);
+    safeInject(body, html);
 
   } catch (e) {
     body.textContent = `네트워크 오류: ${e.message}`;
@@ -245,9 +244,9 @@ function closePanel() {
 
 /* ===== TEXTAREA 활성화 감지 ===== */
 document.addEventListener('DOMContentLoaded', () => {
-  const textarea  = document.getElementById('input');
+  const textarea   = document.getElementById('input');
   const titleInput = document.getElementById('input-title');
-  const btnNext   = document.getElementById('btn-next');
+  const btnNext    = document.getElementById('btn-next');
 
   const syncBtn = () => {
     const title = titleInput?.value.trim() || '';
@@ -271,5 +270,5 @@ function showToast(msg) {
 }
 
 function showComingSoon(name) {
-  showToast(`${name} 페이지 준비중이에요 🙂`);
+  showToast(`${name} 기능은 준비중이에요 🙂`);
 }

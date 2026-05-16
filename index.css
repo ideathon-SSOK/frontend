@@ -396,14 +396,6 @@ textarea::placeholder { color: var(--ink-faint); }
 .panel-close:hover { color: var(--ink); }
 .panel-body { overflow-y: auto; flex: 1; padding-bottom: 0.5rem; }
 
-#analysis-body {
-  font-size: 14.5px;
-  line-height: 1.9;
-  color: var(--ink-mid);
-  white-space: pre-wrap;
-  letter-spacing: -0.01em;
-}
-
 /* Word sheet */
 .word-sheet-header { align-items: flex-start; padding-top: 0.4rem; }
 .word-sheet-title {
@@ -412,21 +404,6 @@ textarea::placeholder { color: var(--ink-faint); }
   color: var(--ink) !important;
   line-height: 1.2;
   letter-spacing: -0.03em;
-}
-.word-section { margin-bottom: 1.25rem; }
-.word-section-label {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--blue);
-  margin-bottom: 0.4rem;
-  letter-spacing: -0.01em;
-}
-.word-section-body {
-  font-size: 14px;
-  line-height: 1.85;
-  color: var(--ink-mid);
-  white-space: pre-wrap;
-  letter-spacing: -0.01em;
 }
 
 /* ===== LOADING DOTS ===== */
