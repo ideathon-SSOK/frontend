@@ -136,6 +136,12 @@ function handleDragSelect() {
   if (!inText && !inTitle) return;
 
   sel.removeAllRanges();
+
+  document.querySelectorAll('.word').forEach(w => w.classList.remove('active'));
+  document.querySelectorAll('.word').forEach(w => {
+    if (selected.includes(w.dataset.word)) w.classList.add('active');
+  });
+
   openWordSheet(selected.replace(/\s+/g, ' '));
 }
 
@@ -295,31 +301,3 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-
-function handleDragSelect() {
-  const sel      = window.getSelection();
-  const selected = sel?.toString().trim();
-  if (!selected || selected.length <= 1) return;
-
-  const readerText  = document.getElementById('reader-text');
-  const readerTitle = document.getElementById('reader-title');
-  if (!sel.rangeCount) return;
-  const range = sel.getRangeAt(0);
-
-  const inText  = readerText?.contains(range.commonAncestorContainer);
-  const inTitle = readerTitle?.contains(range.commonAncestorContainer);
-  if (!inText && !inTitle) return;
-
-  sel.removeAllRanges();
-
-  // 기존 active 제거
-  document.querySelectorAll('.word').forEach(w => w.classList.remove('active'));
-
-  // 선택된 텍스트와 일치하는 단어 span에 active 추가
-  const allWords = document.querySelectorAll('.word');
-  allWords.forEach(w => {
-    if (w.dataset.word === selected) w.classList.add('active');
-  });
-
-  openWordSheet(selected.replace(/\s+/g, ' '));
-}
