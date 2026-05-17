@@ -359,7 +359,12 @@ body {
   transition: background 0.1s;
 }
 .word:hover { background: var(--blue-light); }
-.word.active { background: var(--blue-light); color: var(--blue); }
+.word.active { 
+  background: var(--blue-light); 
+  color: var(--blue); 
+  z-index: 12;
+   position: relative;
+}
 .reader-text::selection,
 .reader-text *::selection { background: #c8d9fd; color: var(--ink); }
 .reader-title::selection,
