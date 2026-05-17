@@ -260,14 +260,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnNext    = document.getElementById('btn-next');
   const clearBtn   = document.getElementById('clear-btn');
 
-  const syncBtn = () => {
-    const title = titleInput?.value.trim() || '';
-    const text  = textarea.value.trim();
-    btnNext.classList.toggle('disabled-look', !title || !text);
-    clearBtn.style.display = (title || text) ? 'inline' : 'none';
-    titleInput.style.height = 'auto';
-    titleInput.style.height = titleInput.scrollHeight + 'px';
-  };
+const syncBtn = () => {
+  const title = titleInput?.value.trim() || '';
+  const text  = textarea.value.trim();
+  btnNext.classList.toggle('disabled-look', !title || !text);
+  if (clearBtn) clearBtn.style.display = (title || text) ? 'inline' : 'none';  // ← null 체크 추가
+  titleInput.style.height = 'auto';
+  titleInput.style.height = titleInput.scrollHeight + 'px';
+};
   syncBtn();
   textarea.addEventListener('input', syncBtn);
   titleInput?.addEventListener('input', syncBtn);
