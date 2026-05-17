@@ -221,7 +221,7 @@ async function analyzeText() {
 
 async function loadFullAnalysis(title, text) {
   const body = document.getElementById('analysis-body');
-  body.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>  잠시만 기다려 주세요';
+  body.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>  ';
 
   try {
     const res = await fetch(API_TEXT, {
