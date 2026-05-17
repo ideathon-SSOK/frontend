@@ -287,3 +287,8 @@ function showToast(msg) {
 function showComingSoon(name) {
   showToast(`${name} 기능은 준비중이에요 🙂`);
 }
+
+// document.getElementById('input-title').addEventListener('input', function() {
+//   const sub = document.querySelector('.title-sub');
+//   if (sub) sub.style.display = this.value ? 'none' : 'block';
+// });

@@ -6,8 +6,8 @@
   --blue-light: #EBF2FF;
   --ink:        #111111;
   --ink-mid:    #444;
-  --ink-muted:  #898989;
-  --ink-faint:  #ccc;
+  --ink-muted:  #969696;
+  --ink-faint:  #c1c1c1;
   --surface:    #ffffff;
   --bg:         #f9f9f9;
   --border:     #ebebeb;
@@ -253,22 +253,25 @@ body {
   transition: color 0.12s;
 }
 .clear-btn:hover { color: var(--ink); }
-.title-input::placeholder {  color: var(--ink-faint);; font-weight: 600; font-size: 1.3rem; background: var(--bg);}
-.title-sub { font-size: 0.8rem; color: var(--ink-muted); font-weight: 400; letter-spacing: -0.01em; }
+.title-input::placeholder {  color: var(--ink-muted); font-weight: 600; font-size: 1.3rem; background: var(--bg);}
+.title-sub { font-size: 0.8rem; color: var(--ink-muted); font-weight: 400; letter-spacing: -0.01em; margin-bottom: 35px; margin-top: 5px;}
 
 .input-divider { height: 1px; background: var(--border); margin: 0 1.25rem; }
 
 .image-action-row {
   display: flex;
-  padding: 0.6rem 1.25rem;
-  border-bottom: 1px solid var(--border);
+  justify-content: center;
+  gap: 4rem;
+  padding: 0.6rem 0;
+  margin: 0 1.25rem;
+  /* border-bottom: 1px solid var(--border); */
 }
 .image-action-btn {
   display: flex;
   align-items: center;
   gap: 0.35rem;
   background: none; border: none;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-family: var(--sans);
   color: var(--ink-muted);
   cursor: pointer;
