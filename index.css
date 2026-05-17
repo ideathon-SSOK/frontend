@@ -362,13 +362,9 @@ body {
 .word.active { 
   background: var(--blue-light); 
   color: var(--blue); 
-    position: relative;
-  z-index: 15;
 
 }
-#word-overlay {
-  background: transparent;
-}
+
 .reader-text::selection,
 .reader-text *::selection { background: #c8d9fd; color: var(--ink); }
 .reader-title::selection,
