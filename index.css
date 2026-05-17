@@ -329,8 +329,6 @@ body {
   overflow-y: auto;
   padding: 1rem 1.25rem 1rem;
   background: var(--bg);;
-    position: relative; 
-  z-index: 12;
 }
 .reader-hint {
   font-size: 0.75rem;
@@ -364,7 +362,12 @@ body {
 .word.active { 
   background: var(--blue-light); 
   color: var(--blue); 
+    position: relative;
+  z-index: 15;
 
+}
+#word-overlay {
+  background: transparent;
 }
 .reader-text::selection,
 .reader-text *::selection { background: #c8d9fd; color: var(--ink); }
