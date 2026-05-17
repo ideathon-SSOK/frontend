@@ -195,7 +195,7 @@ async function openWordSheet(word) {
 function closeWordSheet() {
   document.getElementById('word-overlay').classList.remove('show');
   document.getElementById('word-sheet').classList.remove('show');
-  document.querySelectorAll('.word').forEach(w => w.classList.remove('active'));
+  // document.querySelectorAll('.word').forEach(w => w.classList.remove('active'));
   activeWord = null;
 }
 
@@ -288,7 +288,9 @@ function showComingSoon(name) {
   showToast(`${name} 기능은 준비중이에요 🙂`);
 }
 
-document.getElementById('input-title').addEventListener('input', function() {
-  const sub = document.querySelector('.title-sub');
-  if (sub) sub.style.display = this.value ? 'none' : 'block';
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('input-title').addEventListener('input', function() {
+    const sub = document.querySelector('.title-sub');
+    if (sub) sub.style.display = this.value ? 'none' : 'block';
+  });
 });
